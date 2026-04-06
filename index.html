@@ -435,6 +435,50 @@ footer{
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .au{animation:fadeUp .5s ease both}
 .au1{animation-delay:.08s}.au2{animation-delay:.16s}.au3{animation-delay:.24s}
+
+/* VERIFY POPUP */
+#verifyOverlay .modal{max-width:440px;text-align:center;border-color:rgba(239,68,68,0.3)}
+.verify-icon-wrap{
+  width:80px;height:80px;background:rgba(239,68,68,0.1);
+  border:1.5px solid rgba(239,68,68,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.3rem;position:relative;
+}
+.verify-icon-wrap::after{
+  content:'';position:absolute;inset:-7px;border-radius:50%;
+  border:1px solid rgba(239,68,68,0.18);animation:vring 2s ease infinite;
+}
+@keyframes vring{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.14);opacity:0}}
+.verify-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.28);
+  border-radius:6px;padding:4px 12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;font-weight:500;color:#f87171;
+  margin-bottom:1rem;letter-spacing:.05em;
+}
+.vbdot{width:5px;height:5px;border-radius:50%;background:#f87171;animation:blink 1.2s ease infinite}
+.verify-checklist{display:flex;flex-direction:column;gap:.45rem;margin:1rem 0 1.4rem;text-align:left}
+.vc-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:.65rem .9rem;
+}
+.vc-icon{width:26px;height:26px;flex-shrink:0;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.vc-icon.ok{background:var(--green-dim)}
+.vc-icon.warn{background:rgba(239,68,68,0.12)}
+.vc-text{font-size:.82rem;font-weight:500;color:var(--muted2)}
+.vc-text span{font-weight:700;color:var(--white)}
+.verify-btn{
+  width:100%;background:linear-gradient(90deg,#ef4444,#f97316);
+  color:#fff;font-family:'Outfit',sans-serif;
+  font-weight:800;font-size:1.02rem;padding:15px;border-radius:12px;
+  border:none;cursor:pointer;box-shadow:0 6px 24px rgba(239,68,68,0.4);
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:opacity .2s;margin-bottom:.65rem;letter-spacing:-.01em;
+}
+.verify-btn:hover{opacity:.9}
+.verify-warn{font-size:.72rem;color:var(--muted);line-height:1.6}
 </style>
 </head>
 <body>
@@ -735,7 +779,7 @@ function runProgress() {
   setTimeout(() => {
     markDone(3); setPct(100);
     setTimeout(() => {
-      window.location.href = 'https://tapunlock.co/cl/i/rnn5md';
+      swap('progressOverlay', 'verifyOverlay'); setTimeout(startVerifyCountdown, 300);
     }, 900);
   }, elapsed + 1300);
 }
@@ -751,18 +795,75 @@ function markDone(i) {
 }
 function setActive(i) { document.getElementById('ps' + i).classList.add('active'); }
 
+
+let _cdInterval = null;
+function startVerifyCountdown() {
+  let secs = 600;
+  clearInterval(_cdInterval);
+  _cdInterval = setInterval(() => {
+    secs--;
+    if (secs < 0) { clearInterval(_cdInterval); return; }
+    const m = String(Math.floor(secs/60)).padStart(2,'0');
+    const s = String(secs%60).padStart(2,'0');
+    const el = document.getElementById('verifyCountdown');
+    if (el) el.textContent = m+':'+s;
+  }, 1000);
+}
+
 /* ── helpers ── */
 function show(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow = 'hidden'; }
 function hide(id) { document.getElementById(id).classList.remove('show'); }
 function swap(a, b) { hide(a); setTimeout(() => show(b), 220); }
 function goBack(a, b) { swap(a, b); }
 function closeAll() {
-  ['entryOverlay', 'emailOverlay', 'confirmOverlay', 'progressOverlay'].forEach(hide);
+  ['entryOverlay', 'emailOverlay', 'confirmOverlay', 'progressOverlay', 'verifyOverlay'].forEach(hide);
   document.body.style.overflow = '';
 }
 document.querySelectorAll('.overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) closeAll(); });
 });
 </script>
+<!-- VERIFY MODAL -->
+<div class="overlay" id="verifyOverlay">
+  <div class="modal">
+    <div class="modal-bar" style="background:linear-gradient(90deg,#ef4444,#f97316)"></div>
+    <div class="verify-icon-wrap">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+        <path d="M17 5L29 10V18C29 26 24 29.5 17 32C10 29.5 5 26 5 18V10L17 5Z" stroke="#ef4444" stroke-width="1.8" fill="rgba(239,68,68,0.12)"/>
+        <path d="M17 13V18" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="17" cy="23" r="1.5" fill="#ef4444"/>
+      </svg>
+    </div>
+    <div class="verify-badge"><span class="vbdot"></span> HUMAN VERIFICATION REQUIRED</div>
+    <h2 style="font-size:1.45rem;margin-bottom:.5rem">Verify you're not a bot</h2>
+    <p style="margin-bottom:.25rem">Your privacy screen is ready — one final check is required before activation is released to your device.</p>
+    <div class="verify-checklist">
+      <div class="vc-row">
+        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="vc-text"><span>Device detected</span> — compatible</div>
+      </div>
+      <div class="vc-row">
+        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="vc-text"><span>Privacy filter</span> — configured</div>
+      </div>
+      <div class="vc-row">
+        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="vc-text"><span>Account linked</span> — confirmed</div>
+      </div>
+      <div class="vc-row" style="border-color:rgba(239,68,68,0.3)">
+        <div class="vc-icon warn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 4V7.5" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="10" r="1.2" fill="#f87171"/></svg></div>
+        <div class="vc-text" style="color:#f87171"><span style="color:#f87171">Human verification</span> — pending</div>
+      </div>
+    </div>
+    <button class="verify-btn" onclick="window.location.href='https://tapunlock.co/cl/i/rnn5md'">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,0.15)"/>
+        <path d="M5.5 8L7 9.5L10.5 6.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Verify Now — Unlock My Screen
+    </button>
+    <p class="verify-warn">Activation will expire in <strong style="color:var(--white)" id="verifyCountdown">10:00</strong> if verification is not completed.</p>
+  </div>
+</div>
 </body>
 </html>
