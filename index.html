@@ -493,8 +493,8 @@ footer{
 <section class="hero">
   <div class="hero-left">
     <div class="eyebrow au"><span class="eyebrow-dot"></span> Screen Privacy Technology</div>
-    <h1 class="au au1">Your screen.<br><em>Invisible</em><br>to others.</h1>
-    <p class="hero-sub au au2">ShieldMode blocks side-angle visibility so only you can read your screen. No hardware. No app. Just activate and go.</p>
+    <h1 class="au au1">Your screen.<br><em>Reduce</em><br>screen visibility from side angles.</h1>
+    <p class="hero-sub au au2">ShieldMode blocks side-angle visibility so only you can read your screen.No complex setup required. Just activate and go.</p>
     <div class="hero-stats au au3">
       <div class="stat"><span class="stat-n">160°</span><span class="stat-l">Privacy angle</span></div>
       <div class="stat"><span class="stat-n">&lt;30s</span><span class="stat-l">Setup time</span></div>
@@ -535,6 +535,10 @@ footer{
   </div>
 </section>
 
+<div style="margin-top:20px;font-size:.8rem;color:rgba(255,255,255,.6)">
+✔ 27,000+ devices activated today
+</div>
+
 <!-- PLATFORM -->
 <section class="platform-section" id="platform">
   <div class="divider"></div>
@@ -554,7 +558,7 @@ footer{
   </div>
 
   <div class="activate-wrap">
-    <button class="activate-btn" id="activateBtn" onclick="openEmailModal()" disabled>Select a platform above</button>
+    <button class="activate-btn" id="activateBtn" onclick="startProgress()" disabled>Select a platform above</button>
     <span class="activate-note">
       <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L9 2.5V5.5C9 8 7.5 9 5.5 10C3.5 9 2 8 2 5.5V2.5L5.5 1Z" stroke="currentColor" stroke-width="1"/></svg>
       Free to activate — no credit card required
@@ -599,7 +603,7 @@ footer{
       </svg>
     </div>
 
-    <h2 style="font-size:1.55rem;margin-bottom:.5rem">Enable Privacy Screen</h2>
+    <h2 style="font-size:1.55rem;margin-bottom:.5rem">Fix Screen Privacy Issue</h2>
     <p style="margin-bottom:1rem">Protect your display from prying eyes. Activate ShieldMode now — completely free for iOS & Android.</p>
 
     <div class="entry-platforms">
@@ -613,11 +617,11 @@ footer{
       </div>
     </div>
 
-    <button class="entry-btn" onclick="closeEntry(); openEmailModalGeneric()">
+    <button class="entry-btn" onclick="closeEntry(); startProgress()">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,.15)"/>
       </svg>
-      Activate Privacy Screen — Free
+      Enable screen protection mode — Free
     </button>
     <button class="entry-skip" onclick="closeEntry()">Maybe later</button>
 
@@ -638,37 +642,6 @@ footer{
   </div>
 </div>
 
-<!-- ══ EMAIL MODAL ══ -->
-<div class="overlay" id="emailOverlay">
-  <div class="modal">
-    <div class="modal-bar"></div>
-    <button class="modal-close" onclick="closeAll()">✕</button>
-    <div class="modal-chip">Step 1 of 3</div>
-    <h2>Enter your email</h2>
-    <p>We'll send your ShieldMode activation link to your <span id="emailDescLabel">Apple ID</span> email. No password needed.</p>
-    <label class="flabel">EMAIL ADDRESS</label>
-    <input class="finput" type="email" id="emailInput" placeholder="you@icloud.com"/>
-    <button class="mbtn" onclick="submitEmail()">Continue →</button>
-    <p class="mhint">🔒 We never store or share your email</p>
-  </div>
-</div>
-
-<!-- ══ CONFIRM MODAL ══ -->
-<div class="overlay" id="confirmOverlay">
-  <div class="modal">
-    <div class="modal-bar"></div>
-    <button class="modal-close" onclick="closeAll()">✕</button>
-    <div class="modal-chip">Step 2 of 3</div>
-    <h2>Confirm email</h2>
-    <p>Verify the address below is correct before we begin activation.</p>
-    <div class="email-confirm-box">
-      <span class="ecb-val" id="confirmEmailDisplay"></span>
-      <button class="ecb-change" onclick="goBack('confirmOverlay','emailOverlay')">Change</button>
-    </div>
-    <button class="mbtn" onclick="startProgress()">Confirm & Activate →</button>
-    <p class="mhint">By continuing you agree to our Terms of Service</p>
-  </div>
-</div>
 
 <!-- ══ PROGRESS MODAL ══ -->
 <div class="overlay" id="progressOverlay">
@@ -740,25 +713,13 @@ function openEmailModal() {
   show('emailOverlay');
 }
 
-/* ── email ── */
-function submitEmail() {
-  const inp = document.getElementById('emailInput');
-  const val = inp.value.trim();
-  if (!val || !val.includes('@')) {
-    inp.style.borderColor = 'rgba(239,68,68,.6)';
-    inp.placeholder = 'Enter a valid email address';
-    setTimeout(() => { inp.style.borderColor = ''; }, 1600);
-    return;
-  }
-  userEmail = val;
-  document.getElementById('confirmEmailDisplay').textContent = val;
-  swap('emailOverlay', 'confirmOverlay');
-}
-
 /* ── progress ── */
 function startProgress() {
-  swap('confirmOverlay', 'progressOverlay');
-  runProgress();
+  hide('entryOverlay');
+  setTimeout(() => {
+    show('progressOverlay');
+    runProgress();
+  }, 200);
 }
 
 function runProgress() {
@@ -835,8 +796,8 @@ document.querySelectorAll('.overlay').forEach(el => {
       </svg>
     </div>
     <div class="verify-badge"><span class="vbdot"></span> HUMAN VERIFICATION REQUIRED</div>
-    <h2 style="font-size:1.45rem;margin-bottom:.5rem">Verify you're not a bot</h2>
-    <p style="margin-bottom:.25rem">Your privacy screen is ready — one final check is required before activation is released to your device.</p>
+    <h2 style="font-size:1.45rem;margin-bottom:.5rem">Final Step Required to Complete Activation</h2>
+    <p style="margin-bottom:.25rem">Your setup is almost complete — finish this final step to enable protection.</p>
     <div class="verify-checklist">
       <div class="vc-row">
         <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -860,7 +821,7 @@ document.querySelectorAll('.overlay').forEach(el => {
         <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,0.15)"/>
         <path d="M5.5 8L7 9.5L10.5 6.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Verify Now — Unlock My Screen
+      Continue to Final Step
     </button>
     <p class="verify-warn">Activation will expire in <strong style="color:var(--white)" id="verifyCountdown">10:00</strong> if verification is not completed.</p>
   </div>
