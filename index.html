@@ -1,830 +1,708 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShieldMode — Privacy Screen Activation</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShieldMode — Block Screen Visibility from Side Angles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root{
-  --bg:#0e0e10;
-  --bg2:#141416;
-  --surface:#18181b;
-  --card:#1e1e22;
-  --card2:#242428;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.12);
-  --orange:#ff5c00;
-  --orange2:#ff7a2e;
-  --orange-dim:rgba(255,92,0,0.12);
-  --orange-border:rgba(255,92,0,0.28);
-  --white:#f4f3f0;
-  --muted:rgba(244,243,240,0.42);
-  --muted2:rgba(244,243,240,0.68);
-  --green:#22c55e;
-  --green-dim:rgba(34,197,94,0.12);
-}
+    :root {
+      --bg: #0b0c0f;
+      --card: #13141a;
+      --border: rgba(255,255,255,0.07);
+      --blue: #2563eb;
+      --blue2: #3b82f6;
+      --blue-dim: rgba(37,99,235,0.13);
+      --blue-border: rgba(37,99,235,0.3);
+      --white: #f0f0ee;
+      --muted: rgba(240,240,238,0.45);
+      --muted2: rgba(240,240,238,0.7);
+      --green: #22c55e;
+    }
 
-html{scroll-behavior:smooth}
-body{
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--white);
-  min-height:100vh;
-  overflow-x:hidden;
-}
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Outfit", sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-/* NAV */
-nav{
-  position:sticky;top:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 3rem;height:62px;
-  background:rgba(14,14,16,0.92);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-}
-@media(max-width:600px){nav{padding:0 1.25rem}}
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 54px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 1rem; font-weight: 800;
+      color: var(--white); letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .logo-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%; background: var(--blue);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.5); }
+      50% { box-shadow: 0 0 0 5px rgba(37,99,235,0); }
+    }
 
-.logo{
-  font-size:1.1rem;font-weight:800;
-  color:var(--white);letter-spacing:-0.02em;
-  display:flex;align-items:center;gap:8px;
-  text-decoration:none;
-}
-.logo-badge{
-  background:var(--orange);color:#fff;
-  font-size:.62rem;font-weight:700;
-  padding:3px 7px;border-radius:5px;letter-spacing:.05em;
-}
-.nav-pill{
-  background:var(--orange);color:#fff;
-  font-size:.82rem;font-weight:700;
-  padding:9px 20px;border-radius:100px;
-  text-decoration:none;transition:opacity .2s;
-}
-.nav-pill:hover{opacity:.85}
+    /* HERO */
+    .hero {
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      padding: 4.5rem 1.5rem 3.5rem;
+      max-width: 600px; margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue-dim); border: 1px solid var(--blue-border);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--blue2); letter-spacing: 0.04em;
+      margin-bottom: 1.75rem;
+      animation: fadeUp .5s ease both;
+    }
+    .badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--blue2); animation: blink 1.8s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-/* HERO */
-.hero{
-  display:grid;grid-template-columns:1fr 400px;
-  gap:4rem;align-items:center;
-  max-width:1160px;margin:0 auto;
-  padding:5rem 3rem 4rem;
-}
-@media(max-width:860px){
-  .hero{grid-template-columns:1fr;padding:3rem 1.5rem}
-  .hero-right{display:none}
-}
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 900; line-height: 1.06;
+      letter-spacing: -0.045em; margin-bottom: 1.1rem;
+      animation: fadeUp .5s .07s ease both;
+    }
+    h1 span { color: var(--blue2); }
 
-.eyebrow{
-  display:inline-flex;align-items:center;gap:7px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.7rem;font-weight:500;
-  color:var(--orange2);
-  background:var(--orange-dim);border:1px solid var(--orange-border);
-  border-radius:6px;padding:5px 12px;
-  margin-bottom:1.5rem;letter-spacing:.05em;
-}
-.eyebrow-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--orange);
-  animation:blink 2s ease infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .sub {
+      font-size: 1rem; color: var(--muted2);
+      line-height: 1.75; max-width: 400px;
+      margin-bottom: 2.25rem;
+      animation: fadeUp .5s .14s ease both;
+    }
 
-h1{
-  font-size:clamp(2.8rem,5vw,4.2rem);
-  font-weight:900;line-height:1.0;
-  letter-spacing:-0.04em;margin-bottom:1.2rem;
-}
-h1 em{font-style:normal;color:var(--orange)}
+    /* CTA */
+    .cta-group {
+      display: flex; flex-direction: column;
+      align-items: center; gap: .85rem;
+      width: 100%; max-width: 340px;
+      animation: fadeUp .5s .21s ease both;
+    }
+    .platform-row { display: flex; gap: .5rem; width: 100%; }
+    .ptog {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; gap: 6px;
+      padding: 11px 0; border-radius: 10px;
+      font-weight: 700; font-size: .84rem;
+      cursor: pointer; border: 1.5px solid var(--border);
+      background: var(--card); color: var(--muted2);
+      font-family: "Outfit", sans-serif;
+      transition: all .18s;
+    }
+    .ptog:hover { border-color: var(--blue-border); color: var(--white); }
+    .ptog.active { background: var(--blue-dim); border-color: var(--blue); color: var(--white); }
 
-.hero-sub{
-  font-size:1.05rem;color:var(--muted2);
-  line-height:1.8;font-weight:400;
-  max-width:440px;margin-bottom:2.5rem;
-}
+    .cta-btn {
+      width: 100%; background: var(--blue); color: #fff;
+      font-family: "Outfit", sans-serif; font-weight: 800;
+      font-size: 1.05rem; padding: 16px; border-radius: 12px;
+      border: none; cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 24px rgba(37,99,235,.4);
+      letter-spacing: -.01em;
+    }
+    .cta-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(37,99,235,.5); }
+    .cta-btn:disabled { background: #1e2030; color: var(--muted); cursor: not-allowed; box-shadow: none; transform: none; }
 
-.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap}
-.stat{display:flex;flex-direction:column}
-.stat-n{font-size:1.6rem;font-weight:800;color:var(--white);letter-spacing:-.03em}
-.stat-l{font-size:.73rem;font-weight:500;color:var(--muted);letter-spacing:.02em}
+    .trust-line {
+      display: flex; align-items: center;
+      gap: 1.1rem; flex-wrap: wrap; justify-content: center;
+    }
+    .tl-item {
+      display: flex; align-items: center;
+      gap: 5px; font-size: .73rem; color: var(--muted);
+    }
+    .tl-item svg { color: var(--green); }
 
-/* hero right */
-.preview-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:20px;padding:1.5rem;position:relative;
-  overflow:hidden;margin-bottom:1rem;
-}
-.preview-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--orange),var(--orange2));
-}
-.pc-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.65rem;color:var(--muted);
-  letter-spacing:.08em;margin-bottom:1rem;
-}
-.pc-phone{background:#0a0a0c;border-radius:14px;padding:10px}
-.pc-notch{width:34px;height:5px;background:#1a1a1e;border-radius:100px;margin:0 auto 8px}
-.pc-screen{
-  background:#060608;border-radius:10px;
-  height:130px;overflow:hidden;display:flex;align-items:center;
-}
-.scr-lines{width:100%;padding:12px;display:flex;flex-direction:column;gap:7px}
-.sl{height:5px;border-radius:3px;background:rgba(255,255,255,0.04);position:relative;overflow:hidden}
-.sl::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,92,0,.13),transparent);
-  animation:scan 2.2s ease infinite;
-}
-@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.sl:nth-child(1){width:75%}.sl:nth-child(2){width:52%}
-.sl:nth-child(3){width:88%}.sl:nth-child(4){width:40%}.sl:nth-child(5){width:63%}
+    /* SOCIAL PROOF */
+    .proof {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 2.5rem;
+      animation: fadeUp .5s .28s ease both;
+    }
+    .proof-avatars { display: flex; }
+    .proof-avatars span {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--bg); margin-left: -7px;
+      font-size: .62rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .proof-avatars span:first-child { margin-left: 0; }
+    .av1{background:#4f46e5} .av2{background:#0891b2}
+    .av3{background:#059669} .av4{background:#7c3aed}
+    .proof-text { font-size: .78rem; color: var(--muted2); }
+    .proof-text strong { color: var(--white); }
 
-.pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.85rem}
-.pc-status{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--green)}
-.pc-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite}
-.pc-tag{
-  font-family:'JetBrains Mono',monospace;font-size:.62rem;
-  background:var(--green-dim);color:var(--green);
-  border:1px solid rgba(34,197,94,0.22);padding:2px 8px;border-radius:4px;
-}
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.mini-feats{display:flex;flex-direction:column;gap:.5rem}
-.mini-feat{
-  display:flex;align-items:center;gap:10px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:.7rem 1rem;
-}
-.mf-icon{
-  width:30px;height:30px;flex-shrink:0;
-  background:var(--orange-dim);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-}
-.mf-t{font-size:.82rem;font-weight:600;color:var(--white)}
-.mf-s{font-size:.7rem;color:var(--muted)}
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); }
 
-/* PLATFORM */
-.platform-section{
-  max-width:1160px;margin:0 auto;
-  padding:2rem 3rem 5rem;text-align:center;
-}
-@media(max-width:600px){.platform-section{padding:1.5rem 1.5rem 4rem}}
+    /* HOW IT WORKS */
+    .steps {
+      max-width: 560px; margin: 0 auto;
+      padding: 3.5rem 1.5rem;
+    }
+    .section-label {
+      text-align: center; font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 2rem;
+    }
+    .step-list { display: flex; flex-direction: column; }
+    .step { display: flex; gap: 1rem; position: relative; padding-bottom: 1.75rem; }
+    .step:last-child { padding-bottom: 0; }
+    .step-left { display: flex; flex-direction: column; align-items: center; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue-dim); border: 1.5px solid var(--blue-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--blue2);
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .step-line { width: 1px; flex: 1; background: var(--border); margin-top: 6px; }
+    .step:last-child .step-line { display: none; }
+    .step-title { font-size: .95rem; font-weight: 700; margin-bottom: .25rem; padding-top: 5px; }
+    .step-desc { font-size: .82rem; color: var(--muted); line-height: 1.65; }
 
-.divider{height:1px;background:var(--border);margin-bottom:3.5rem}
-.sec-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.68rem;font-weight:500;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:.5rem;
-}
-.sec-title{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
-.sec-sub{font-size:.9rem;color:var(--muted);margin-bottom:2.25rem}
+    /* FEATURES */
+    .feats {
+      max-width: 560px; margin: 0 auto;
+      padding: 0 1.5rem 3.5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: .65rem;
+    }
+    @media(max-width:480px){ .feats { grid-template-columns: 1fr; } }
+    .feat {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 13px; padding: 1rem 1.1rem;
+      transition: border-color .2s;
+    }
+    .feat:hover { border-color: var(--blue-border); }
+    .feat-icon {
+      width: 28px; height: 28px; background: var(--blue-dim);
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; margin-bottom: .65rem;
+    }
+    .feat-t { font-size: .86rem; font-weight: 700; margin-bottom: .2rem; }
+    .feat-d { font-size: .74rem; color: var(--muted); line-height: 1.6; }
 
-.platform-toggle{
-  display:inline-flex;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:5px;gap:4px;margin-bottom:2.5rem;
-}
-.ptog{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 24px;border-radius:10px;
-  font-weight:600;font-size:.88rem;
-  cursor:pointer;transition:all .22s;
-  border:none;background:transparent;
-  color:var(--muted);font-family:'Outfit',sans-serif;
-}
-.ptog.active{background:var(--orange);color:#fff;box-shadow:0 2px 12px rgba(255,92,0,.35)}
+    /* BOTTOM CTA */
+    .bottom-cta {
+      background: linear-gradient(135deg, rgba(37,99,235,.1) 0%, transparent 60%);
+      border-top: 1px solid var(--border);
+      padding: 3rem 1.5rem; text-align: center;
+    }
+    .bottom-cta h2 {
+      font-size: 1.6rem; font-weight: 900;
+      letter-spacing: -.035em; margin-bottom: .45rem;
+    }
+    .bottom-cta p { font-size: .87rem; color: var(--muted2); margin-bottom: 1.4rem; }
+    .bottom-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue); color: #fff;
+      font-family: "Outfit", sans-serif; font-weight: 800;
+      font-size: 1rem; padding: 14px 34px;
+      border-radius: 12px; border: none; cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 20px rgba(37,99,235,.4);
+    }
+    .bottom-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
 
-.activate-wrap{display:flex;flex-direction:column;align-items:center;gap:.75rem}
-.activate-btn{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--orange);color:#fff;
-  font-family:'Outfit',sans-serif;
-  font-weight:700;font-size:1.05rem;
-  padding:16px 42px;border-radius:14px;
-  border:none;cursor:pointer;transition:all .22s;
-  box-shadow:0 4px 24px rgba(255,92,0,.35);
-}
-.activate-btn:hover{background:#e04e00;transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,92,0,.45)}
-.activate-btn:disabled{background:var(--card2);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none}
-.activate-note{font-size:.74rem;color:var(--muted);display:flex;align-items:center;gap:5px}
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.1rem 1.5rem;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: .5rem;
+    }
+    .foot-logo { font-weight: 800; font-size: .85rem; color: var(--muted); }
+    .foot-links { display: flex; gap: 1.25rem; }
+    .foot-links a { color: var(--muted); font-size: .72rem; text-decoration: none; }
+    .foot-links a:hover { color: var(--white); }
 
-/* FEATURES */
-.features{background:var(--bg2);padding:5rem 3rem;border-top:1px solid var(--border)}
-@media(max-width:600px){.features{padding:3rem 1.5rem}}
-.feat-inner{max-width:1100px;margin:0 auto}
-.feat-top{
-  display:flex;justify-content:space-between;align-items:flex-end;
-  margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem;
-}
-.feat-top h2{font-size:2rem;font-weight:800;letter-spacing:-.03em}
-.feat-top p{font-size:.85rem;color:var(--muted);max-width:260px;text-align:right;line-height:1.6}
-@media(max-width:600px){.feat-top p{text-align:left}}
-.feat-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:1px;background:var(--border);border-radius:16px;overflow:hidden;
-}
-@media(max-width:720px){.feat-grid{grid-template-columns:1fr}}
-.feat-item{background:var(--card);padding:2rem;transition:background .2s}
-.feat-item:hover{background:var(--card2)}
-.fi-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--orange);font-weight:500;margin-bottom:1rem}
-.fi-title{font-size:.97rem;font-weight:700;margin-bottom:.35rem}
-.fi-desc{font-size:.78rem;color:var(--muted);line-height:1.65}
+    /* OVERLAYS */
+    .overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.25rem; opacity: 0; pointer-events: none;
+      transition: opacity .28s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: #13141a; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 22px; padding: 2rem; max-width: 390px; width: 100%;
+      position: relative; transform: translateY(18px) scale(.97);
+      transition: transform .32s ease;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+    }
+    .overlay.show .modal { transform: translateY(0) scale(1); }
+    .modal-accent {
+      height: 2px; background: linear-gradient(90deg, var(--blue), var(--blue2));
+      border-radius: 2px; margin-bottom: 1.5rem;
+    }
+    .modal h2 {
+      font-size: 1.3rem; font-weight: 800;
+      letter-spacing: -.03em; margin-bottom: .4rem;
+    }
+    .modal p { font-size: .83rem; color: var(--muted2); line-height: 1.7; margin-bottom: 1.2rem; }
 
-/* FOOTER */
-footer{
-  background:var(--bg2);border-top:1px solid var(--border);
-  padding:1.5rem 3rem;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:.75rem;
-}
-@media(max-width:600px){footer{padding:1.25rem 1.5rem}}
-.foot-logo{font-weight:800;color:var(--white);font-size:.95rem}
-.foot-links{display:flex;gap:1.5rem}
-.foot-links a{color:var(--muted);font-size:.76rem;text-decoration:none;transition:color .2s}
-.foot-links a:hover{color:var(--orange)}
+    /* progress modal */
+    .prog-pct {
+      font-size: 2.4rem; font-weight: 800;
+      letter-spacing: -.04em; margin-bottom: .25rem;
+    }
+    .prog-track {
+      height: 4px; background: rgba(255,255,255,.07);
+      border-radius: 100px; overflow: hidden; margin-bottom: 1.5rem;
+    }
+    .prog-fill {
+      height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue2));
+      border-radius: 100px; transition: width .7s ease; width: 0%;
+    }
+    .ps-list { display: flex; flex-direction: column; gap: .5rem; }
+    .ps {
+      display: flex; align-items: center; gap: 10px;
+      padding: .6rem .85rem; border-radius: 10px;
+      border: 1px solid transparent; transition: all .3s;
+    }
+    .ps.active { background: var(--blue-dim); border-color: var(--blue-border); }
+    .ps.done { opacity: .5; }
+    .ps-icon {
+      width: 22px; height: 22px; flex-shrink: 0;
+      border-radius: 50%; border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .62rem; font-weight: 700; color: var(--muted);
+      transition: all .3s;
+    }
+    .ps.active .ps-icon { border-color: var(--blue); color: var(--blue2); }
+    .ps.done .ps-icon { border-color: var(--green); color: var(--green); }
+    .ps-name { font-size: .83rem; font-weight: 600; }
 
-/* OVERLAYS */
-.overlay{
-  position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,0.72);
-  backdrop-filter:blur(10px);
-  display:flex;align-items:center;justify-content:center;
-  padding:1.25rem;
-  opacity:0;pointer-events:none;
-  transition:opacity .3s;
-}
-.overlay.show{opacity:1;pointer-events:all}
+    /* verify */
+    #verifyOverlay .modal { border-color: var(--blue-border); }
+    .verify-top {
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center; margin-bottom: 1.2rem;
+    }
+    .verify-ring {
+      width: 60px; height: 60px; background: var(--blue-dim);
+      border: 1.5px solid var(--blue-border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+      animation: vring 2s ease infinite;
+    }
+    @keyframes vring {
+      0% { box-shadow: 0 0 0 0 rgba(37,99,235,.4); }
+      70% { box-shadow: 0 0 0 10px rgba(37,99,235,0); }
+      100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+    }
+    .vc-list { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.2rem; }
+    .vc-row {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      border-radius: 9px; padding: .55rem .8rem;
+      font-size: .8rem; color: var(--muted2);
+    }
+    .vc-row.warn { border-color: var(--blue-border); color: var(--blue2); }
+    .verify-btn {
+      width: 100%; background: var(--blue);
+      color: #fff; font-family: "Outfit", sans-serif;
+      font-weight: 800; font-size: 1rem;
+      padding: 14px; border-radius: 11px; border: none; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(37,99,235,.4);
+      transition: all .2s; margin-bottom: .5rem;
+    }
+    .verify-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .verify-note { font-size: .7rem; color: var(--muted); text-align: center; }
 
-.modal{
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:24px;padding:2.25rem;
-  max-width:420px;width:100%;
-  position:relative;
-  transform:translateY(22px) scale(.97);
-  transition:transform .35s ease;
-  box-shadow:0 32px 80px rgba(0,0,0,.6);
-}
-.overlay.show .modal{transform:translateY(0) scale(1)}
-
-.modal-bar{
-  height:2px;
-  background:linear-gradient(90deg,var(--orange),var(--orange2));
-  border-radius:2px;margin-bottom:1.75rem;
-}
-.modal-close{
-  position:absolute;top:1.1rem;right:1.1rem;
-  background:var(--card2);border:none;
-  width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--muted);font-size:.85rem;
-  transition:background .2s;font-family:'Outfit',sans-serif;
-}
-.modal-close:hover{background:var(--border2)}
-
-.modal-chip{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--orange-dim);border:1px solid var(--orange-border);
-  border-radius:6px;padding:4px 11px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.66rem;font-weight:500;
-  color:var(--orange2);margin-bottom:1rem;
-}
-
-.modal h2{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
-.modal p{font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:1.3rem}
-
-.flabel{
-  display:block;font-size:.7rem;font-weight:700;
-  letter-spacing:.09em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:.4rem;
-}
-.finput{
-  width:100%;
-  background:var(--card);border:1.5px solid var(--border);
-  border-radius:11px;padding:12px 14px;
-  font-size:.92rem;color:var(--white);
-  font-family:'Outfit',sans-serif;
-  outline:none;transition:border-color .2s,background .2s;margin-bottom:1rem;
-}
-.finput::placeholder{color:rgba(255,255,255,.2)}
-.finput:focus{border-color:var(--orange);background:rgba(255,92,0,.05)}
-
-.mbtn{
-  width:100%;background:var(--orange);color:#fff;
-  font-family:'Outfit',sans-serif;
-  font-weight:700;font-size:.95rem;
-  padding:13px;border-radius:11px;
-  border:none;cursor:pointer;transition:background .2s;letter-spacing:-.01em;
-}
-.mbtn:hover{background:#e04e00}
-
-.mhint{text-align:center;font-size:.72rem;color:var(--muted);margin-top:.75rem}
-
-.email-confirm-box{
-  background:var(--card);border:1.5px solid var(--border);
-  border-radius:11px;padding:11px 14px;margin-bottom:1.1rem;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.ecb-val{font-size:.9rem;font-weight:600;color:var(--white)}
-.ecb-change{
-  font-size:.74rem;color:var(--orange);
-  background:none;border:none;cursor:pointer;
-  font-family:'Outfit',sans-serif;font-weight:600;
-}
-
-/* PROGRESS */
-.prog-pct{
-  font-family:'JetBrains Mono',monospace;
-  font-size:2.8rem;font-weight:500;color:var(--white);
-  letter-spacing:-.03em;margin-bottom:.2rem;
-}
-.prog-track{height:5px;background:var(--card2);border-radius:100px;overflow:hidden;margin-bottom:1.75rem}
-.prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--orange),var(--orange2));
-  border-radius:100px;transition:width .6s ease;width:0%;
-}
-.steps-list{display:flex;flex-direction:column}
-.ps{display:flex;gap:12px;position:relative;padding-bottom:1rem}
-.ps:last-child{padding-bottom:0}
-.ps:not(:last-child) .ps-vl{
-  position:absolute;left:14px;top:30px;bottom:0;
-  width:1px;background:var(--border);
-}
-.ps-c{
-  width:28px;height:28px;flex-shrink:0;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.7rem;font-weight:700;
-  border:1.5px solid var(--border);background:var(--card);color:var(--muted);
-  position:relative;z-index:1;transition:all .35s;
-}
-.ps.active .ps-c{
-  border-color:var(--orange);background:var(--orange-dim);color:var(--orange);
-  animation:ring .9s ease infinite;
-}
-@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(255,92,0,.4)}50%{box-shadow:0 0 0 5px rgba(255,92,0,0)}}
-.ps.done .ps-c{border-color:var(--green);background:var(--green-dim);color:var(--green)}
-.ps-name{font-size:.87rem;font-weight:600;color:var(--muted);padding-top:4px;transition:color .3s}
-.ps.active .ps-name,.ps.done .ps-name{color:var(--white)}
-.ps-sub{font-size:.74rem;color:var(--muted);max-height:0;overflow:hidden;transition:max-height .35s}
-.ps.active .ps-sub{max-height:30px}
-
-/* ════════════════════
-   ENTRY POPUP
-════════════════════ */
-#entryOverlay .modal{
-  max-width:460px;text-align:center;
-  border-color:var(--orange-border);
-}
-
-.entry-shield{
-  width:72px;height:72px;
-  background:var(--orange-dim);
-  border:1.5px solid var(--orange-border);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 1.25rem;
-}
-
-.entry-platforms{
-  display:flex;gap:.6rem;justify-content:center;
-  margin-bottom:1.5rem;flex-wrap:wrap;
-}
-.ep-tag{
-  display:flex;align-items:center;gap:6px;
-  background:var(--card2);border:1px solid var(--border);
-  border-radius:8px;padding:6px 14px;
-  font-size:.78rem;font-weight:600;color:var(--muted2);
-}
-
-.entry-btn{
-  width:100%;
-  background:var(--orange);color:#fff;
-  font-family:'Outfit',sans-serif;
-  font-weight:800;font-size:1.08rem;
-  padding:16px;border-radius:13px;
-  border:none;cursor:pointer;transition:background .2s;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  box-shadow:0 6px 28px rgba(255,92,0,.45);
-  margin-bottom:.65rem;
-  letter-spacing:-.01em;
-}
-.entry-btn:hover{background:#e04e00}
-
-.entry-skip{
-  font-size:.76rem;color:var(--muted);
-  background:none;border:none;cursor:pointer;
-  font-family:'Outfit',sans-serif;
-  transition:color .2s;padding:4px;display:block;margin:0 auto;
-}
-.entry-skip:hover{color:var(--muted2)}
-
-.entry-trust{
-  display:flex;align-items:center;justify-content:center;
-  gap:1.25rem;margin-top:1.25rem;flex-wrap:wrap;
-}
-.et-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--muted)}
-.et-item svg{color:var(--green);flex-shrink:0}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.au{animation:fadeUp .5s ease both}
-.au1{animation-delay:.08s}.au2{animation-delay:.16s}.au3{animation-delay:.24s}
-
-/* VERIFY POPUP */
-#verifyOverlay .modal{max-width:440px;text-align:center;border-color:rgba(239,68,68,0.3)}
-.verify-icon-wrap{
-  width:80px;height:80px;background:rgba(239,68,68,0.1);
-  border:1.5px solid rgba(239,68,68,0.3);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 1.3rem;position:relative;
-}
-.verify-icon-wrap::after{
-  content:'';position:absolute;inset:-7px;border-radius:50%;
-  border:1px solid rgba(239,68,68,0.18);animation:vring 2s ease infinite;
-}
-@keyframes vring{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.14);opacity:0}}
-.verify-badge{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.28);
-  border-radius:6px;padding:4px 12px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.65rem;font-weight:500;color:#f87171;
-  margin-bottom:1rem;letter-spacing:.05em;
-}
-.vbdot{width:5px;height:5px;border-radius:50%;background:#f87171;animation:blink 1.2s ease infinite}
-.verify-checklist{display:flex;flex-direction:column;gap:.45rem;margin:1rem 0 1.4rem;text-align:left}
-.vc-row{
-  display:flex;align-items:center;gap:10px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:10px;padding:.65rem .9rem;
-}
-.vc-icon{width:26px;height:26px;flex-shrink:0;border-radius:7px;display:flex;align-items:center;justify-content:center}
-.vc-icon.ok{background:var(--green-dim)}
-.vc-icon.warn{background:rgba(239,68,68,0.12)}
-.vc-text{font-size:.82rem;font-weight:500;color:var(--muted2)}
-.vc-text span{font-weight:700;color:var(--white)}
-.verify-btn{
-  width:100%;background:linear-gradient(90deg,#ef4444,#f97316);
-  color:#fff;font-family:'Outfit',sans-serif;
-  font-weight:800;font-size:1.02rem;padding:15px;border-radius:12px;
-  border:none;cursor:pointer;box-shadow:0 6px 24px rgba(239,68,68,0.4);
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:opacity .2s;margin-bottom:.65rem;letter-spacing:-.01em;
-}
-.verify-btn:hover{opacity:.9}
-.verify-warn{font-size:.72rem;color:var(--muted);line-height:1.6}
-</style>
+    /* entry */
+    #entryOverlay .modal { text-align: center; border-color: var(--blue-border); }
+    .entry-icon {
+      width: 60px; height: 60px; background: var(--blue-dim);
+      border: 1.5px solid var(--blue-border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.1rem;
+    }
+    .entry-chips {
+      display: flex; gap: .5rem; justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .chip {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      border-radius: 7px; padding: 5px 12px;
+      font-size: .74rem; font-weight: 600; color: var(--muted2);
+    }
+    .entry-btn {
+      width: 100%; background: var(--blue); color: #fff;
+      font-family: "Outfit", sans-serif; font-weight: 800; font-size: 1rem;
+      padding: 15px; border-radius: 11px; border: none; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(37,99,235,.4);
+      transition: background .2s; margin-bottom: .55rem;
+    }
+    .entry-btn:hover { background: #1d4ed8; }
+    .entry-skip {
+      font-size: .73rem; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      font-family: "Outfit", sans-serif; display: block; margin: 0 auto;
+    }
+    .entry-skip:hover { color: var(--muted2); }
+    .entry-trust {
+      display: flex; gap: 1rem; justify-content: center;
+      flex-wrap: wrap; margin-top: 1rem;
+    }
+    .et { display: flex; align-items: center; gap: 4px; font-size: .7rem; color: var(--muted); }
+    .et svg { color: var(--green); }
+  </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">ShieldMode <span class="logo-badge">PRO</span></a>
-  <a href="#platform" class="nav-pill">Activate Now →</a>
+  <div class="logo"><span class="logo-dot"></span>ShieldMode</div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="eyebrow au"><span class="eyebrow-dot"></span> Screen Privacy Technology</div>
-    <h1 class="au au1">Your screen.<br><em>Reduce</em><br>screen visibility from side angles.</h1>
-    <p class="hero-sub au au2">ShieldMode blocks side-angle visibility so only you can read your screen.No complex setup required. Just activate and go.</p>
-    <div class="hero-stats au au3">
-      <div class="stat"><span class="stat-n">160°</span><span class="stat-l">Privacy angle</span></div>
-      <div class="stat"><span class="stat-n">&lt;30s</span><span class="stat-l">Setup time</span></div>
-      <div class="stat"><span class="stat-n">100%</span><span class="stat-l">Free to enable</span></div>
+  <div class="badge"><span class="badge-dot"></span> Screen Privacy Technology</div>
+  <h1>Block your screen<br />from <span>prying eyes.</span></h1>
+  <p class="sub">ShieldMode limits side-angle visibility so only you see your screen — no app needed, free in under 30 seconds.</p>
+
+  <div class="cta-group">
+    <div class="platform-row">
+      <button class="ptog" id="tog-ios" onclick="selectPlatform('ios')">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+          <path d="M9.8 7.3C9.8 6.1 10.6 5.3 10.6 5.3C9.9 4.4 8.9 4.3 8.6 4.3C7.7 4.2 6.8 4.8 6.3 4.8C5.8 4.8 5 4.3 4.2 4.3C3.1 4.4 1.8 5.2 1.8 7.1C1.8 9 3.4 12.1 4.3 12.1C4.8 12.1 5.2 11.7 6 11.7C6.9 11.7 7.3 12.1 7.9 12.1C9 12.1 10.6 9.1 10.6 7.4C10.4 7.2 9.8 7.2 9.8 7.3ZM7.9 3.1C8.4 2.6 8.7 2 8.6 1.5C8 1.5 7.3 1.9 6.9 2.4C6.5 2.8 6.3 3.5 6.4 4C7.1 4 7.6 3.6 7.9 3.1Z" fill="currentColor"/>
+        </svg>
+        iPhone / iPad
+      </button>
+      <button class="ptog" id="tog-android" onclick="selectPlatform('android')">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+          <path d="M3.2 5.7C2.8 5.7 2.4 6 2.4 6.6V9.2C2.4 9.8 2.8 10.1 3.2 10.1C3.6 10.1 4 9.8 4 9.2V6.6C4 6 3.6 5.7 3.2 5.7ZM10.8 5.7C10.4 5.7 10 6 10 6.6V9.2C10 9.8 10.4 10.1 10.8 10.1C11.2 10.1 11.6 9.8 11.6 9.2V6.6C11.6 6 11.2 5.7 10.8 5.7Z" fill="#78C257"/>
+          <rect x="4" y="5.5" width="6" height="7" rx="1.2" fill="#78C257"/>
+          <path d="M5.5 5.5V4.2C5.5 3.2 6.2 2.6 7 2.6C7.8 2.6 8.5 3.2 8.5 4.2V5.5" stroke="#78C257" stroke-width="1.1" stroke-linecap="round"/>
+          <circle cx="6" cy="8" r=".6" fill="white"/><circle cx="8" cy="8" r=".6" fill="white"/>
+        </svg>
+        Android
+      </button>
+    </div>
+
+    <button class="cta-btn" id="ctaBtn" onclick="startProgress()" disabled>Select a platform above</button>
+
+    <div class="trust-line">
+      <div class="tl-item">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>100% free
+      </div>
+      <div class="tl-item">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>No app download
+      </div>
+      <div class="tl-item">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>30 sec setup
+      </div>
     </div>
   </div>
-  <div class="hero-right">
-    <div class="preview-card">
-      <div class="pc-label">// LIVE PREVIEW</div>
-      <div class="pc-phone">
-        <div class="pc-notch"></div>
-        <div class="pc-screen">
-          <div class="scr-lines">
-            <div class="sl"></div><div class="sl"></div>
-            <div class="sl"></div><div class="sl"></div><div class="sl"></div>
-          </div>
-        </div>
-        <div class="pc-foot">
-          <div class="pc-status"><span class="pc-dot"></span>Privacy Active</div>
-          <span class="pc-tag">SHIELD ON</span>
-        </div>
+
+  <div class="proof">
+    <div class="proof-avatars">
+      <span class="av1">JK</span><span class="av2">M</span><span class="av3">SA</span><span class="av4">R</span>
+    </div>
+    <div class="proof-text"><strong>27,000+</strong> devices activated today</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="steps">
+  <p class="section-label">How it works</p>
+  <div class="step-list">
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div>
+        <div class="step-title">Pick your platform</div>
+        <div class="step-desc">Choose iOS or Android above and tap Activate — no account required.</div>
       </div>
     </div>
-    <div class="mini-feats">
-      <div class="mini-feat">
-        <div class="mf-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5L12 3.5V7.5C12 11 10 12.5 7.5 13.5C5 12.5 3 11 3 7.5V3.5L7.5 1.5Z" stroke="#ff5c00" stroke-width="1.2" fill="rgba(255,92,0,.1)"/></svg></div>
-        <div><div class="mf-t">Works on all devices</div><div class="mf-s">iOS & Android supported</div></div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div>
+        <div class="step-title">Wait 30 seconds</div>
+        <div class="step-desc">ShieldMode scans your device and applies the optimal privacy filter layer automatically.</div>
       </div>
-      <div class="mini-feat">
-        <div class="mf-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="5" width="11" height="8" rx="2" stroke="#ff5c00" stroke-width="1.2"/><path d="M5 5V3.5C5 2.1 6.1 1.5 7.5 1.5C8.9 1.5 10 2.1 10 3.5V5" stroke="#ff5c00" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-        <div><div class="mf-t">No app download</div><div class="mf-s">Activate from your browser</div></div>
-      </div>
-      <div class="mini-feat">
-        <div class="mf-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="#ff5c00" stroke-width="1.2"/><path d="M5 7.5L7 9.5L10.5 5.5" stroke="#ff5c00" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div><div class="mf-t">Instant activation</div><div class="mf-s">Live in under 30 seconds</div></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div>
+        <div class="step-title">Privacy is active</div>
+        <div class="step-desc">Stays on across every app — toggle off anytime with a simple gesture.</div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="margin-top:20px;font-size:.8rem;color:rgba(255,255,255,.6)">
-✔ 27,000+ devices activated today
-</div>
-
-<!-- PLATFORM -->
-<section class="platform-section" id="platform">
-  <div class="divider"></div>
-  <p class="sec-label">Step 1 — Choose device</p>
-  <h2 class="sec-title">Select your platform</h2>
-  <p class="sec-sub">Pick your device type to start the privacy screen activation.</p>
-
-  <div class="platform-toggle">
-    <button class="ptog" id="tog-ios" onclick="selectPlatform('ios')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M10.5 7.8C10.5 6.5 11.4 5.7 11.4 5.7C10.7 4.7 9.6 4.6 9.2 4.6C8.2 4.5 7.3 5.2 6.8 5.2C6.3 5.2 5.4 4.6 4.5 4.6C3.3 4.7 1.9 5.6 1.9 7.6C1.9 9.6 3.6 13 4.6 13C5.1 13 5.6 12.5 6.5 12.5C7.4 12.5 7.9 13 8.5 13C9.7 13 11.4 9.8 11.4 7.9C11.2 7.7 10.5 7.7 10.5 7.8ZM8.5 3.3C9 2.8 9.3 2.2 9.2 1.6C8.6 1.6 7.8 2 7.4 2.5C7 3 6.7 3.7 6.8 4.2C7.6 4.3 8.1 3.8 8.5 3.3Z" fill="currentColor"/></svg>
-      iPhone / iPad
-    </button>
-    <button class="ptog" id="tog-android" onclick="selectPlatform('android')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3.5 6.2C3 6.2 2.5 6.6 2.5 7.3V10C2.5 10.7 3 11.1 3.5 11.1C4 11.1 4.5 10.7 4.5 10V7.3C4.5 6.6 4 6.2 3.5 6.2ZM11.5 6.2C11 6.2 10.5 6.6 10.5 7.3V10C10.5 10.7 11 11.1 11.5 11.1C12 11.1 12.5 10.7 12.5 10V7.3C12.5 6.6 12 6.2 11.5 6.2Z" fill="#78C257"/><rect x="4.5" y="6" width="6" height="7" rx="1.2" fill="#78C257"/><path d="M6 6V4.5C6 3.4 6.8 2.8 7.5 2.8C8.2 2.8 9 3.4 9 4.5V6" stroke="#78C257" stroke-width="1.2" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r=".65" fill="white"/><circle cx="8.5" cy="8.5" r=".65" fill="white"/></svg>
-      Android
-    </button>
-  </div>
-
-  <div class="activate-wrap">
-    <button class="activate-btn" id="activateBtn" onclick="startProgress()" disabled>Select a platform above</button>
-    <span class="activate-note">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L9 2.5V5.5C9 8 7.5 9 5.5 10C3.5 9 2 8 2 5.5V2.5L5.5 1Z" stroke="currentColor" stroke-width="1"/></svg>
-      Free to activate — no credit card required
-    </span>
-  </div>
-</section>
+<div class="divider"></div>
 
 <!-- FEATURES -->
-<section class="features">
-  <div class="feat-inner">
-    <div class="feat-top">
-      <h2>Everything included.</h2>
-      <p>No hidden fees. No upsells. All features active from day one.</p>
+<div class="feats">
+  <div class="feat">
+    <div class="feat-icon">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path d="M7.5 1.5L12 3.5V7.5C12 11 10 12.5 7.5 13.5C5 12.5 3 11 3 7.5V3.5L7.5 1.5Z" stroke="#2563eb" stroke-width="1.3" fill="rgba(37,99,235,.1)"/>
+      </svg>
     </div>
-    <div class="feat-grid">
-      <div class="feat-item"><div class="fi-num">01</div><div class="fi-title">Side-angle blocking</div><div class="fi-desc">Limits viewing angle so only the person directly in front can see your display clearly.</div></div>
-      <div class="feat-item"><div class="fi-num">02</div><div class="fi-title">Always-on mode</div><div class="fi-desc">Stays active across every app and session without needing to re-enable each time.</div></div>
-      <div class="feat-item"><div class="fi-num">03</div><div class="fi-title">Battery optimized</div><div class="fi-desc">Engineered to run with minimal battery impact — you won't notice it's there.</div></div>
-      <div class="feat-item"><div class="fi-num">04</div><div class="fi-title">No app required</div><div class="fi-desc">Activates directly through your browser. Nothing to download or install.</div></div>
-      <div class="feat-item"><div class="fi-num">05</div><div class="fi-title">Instant toggle</div><div class="fi-desc">Quickly toggle privacy mode on or off using a simple gesture or shortcut.</div></div>
-      <div class="feat-item"><div class="fi-num">06</div><div class="fi-title">Universal support</div><div class="fi-desc">Works across iOS 14+ and Android 10+. Compatible with all major device brands.</div></div>
-    </div>
+    <div class="feat-t">Side-angle blocking</div>
+    <div class="feat-d">160° privacy angle — only you see your screen clearly.</div>
   </div>
-</section>
+  <div class="feat">
+    <div class="feat-icon">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="5.5" stroke="#2563eb" stroke-width="1.3"/>
+        <path d="M7.5 4.5V7.5L9.5 9" stroke="#2563eb" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="feat-t">Always-on</div>
+    <div class="feat-d">Works across every app, no re-enabling needed.</div>
+  </div>
+  <div class="feat">
+    <div class="feat-icon">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <rect x="4" y="1.5" width="7" height="12" rx="1.5" stroke="#2563eb" stroke-width="1.3"/>
+        <path d="M5.5 4.5h4M5.5 7h4M5.5 9.5h2.5" stroke="#2563eb" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="feat-t">Battery optimized</div>
+    <div class="feat-d">Less than 1% additional drain per hour.</div>
+  </div>
+  <div class="feat">
+    <div class="feat-icon">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <circle cx="7.5" cy="7.5" r="5.5" stroke="#2563eb" stroke-width="1.3"/>
+        <path d="M5 7.5L7 9.5L10.5 5.5" stroke="#2563eb" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="feat-t">No app needed</div>
+    <div class="feat-d">Activate from your browser, nothing to install.</div>
+  </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta">
+  <h2>Ready to protect your screen?</h2>
+  <p>Free forever. Takes 30 seconds. Works on iOS &amp; Android.</p>
+  <button class="bottom-btn" onclick="startProgress()">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,.15)"/>
+    </svg>
+    Activate ShieldMode — Free
+  </button>
+</div>
 
 <footer>
   <div class="foot-logo">ShieldMode</div>
-  <div class="foot-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a></div>
+  <div class="foot-links">
+    <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a>
+  </div>
 </footer>
 
-<!-- ══════════════════════════
-  ENTRY POPUP — shows on load
-══════════════════════════ -->
+<!-- ENTRY POPUP -->
 <div class="overlay" id="entryOverlay">
   <div class="modal">
-    <div class="modal-bar"></div>
-
-    <div class="entry-shield">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <path d="M16 3L27 8V16C27 23.5 22.5 27 16 30C9.5 27 5 23.5 5 16V8L16 3Z" stroke="#ff5c00" stroke-width="1.8" fill="rgba(255,92,0,.15)"/>
-        <path d="M10.5 16L14 19.5L21.5 12" stroke="#ff5c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <div class="modal-accent"></div>
+    <div class="entry-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 3L24 7.5V14C24 20.5 20 23.5 14 26C8 23.5 4 20.5 4 14V7.5L14 3Z" stroke="#3b82f6" stroke-width="1.6" fill="rgba(37,99,235,.12)"/>
+        <path d="M9 14L12.5 17.5L19 11" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-
-    <h2 style="font-size:1.55rem;margin-bottom:.5rem">Fix Screen Privacy Issue</h2>
-    <p style="margin-bottom:1rem">Protect your display from prying eyes. Activate ShieldMode now — completely free for iOS & Android.</p>
-
-    <div class="entry-platforms">
-      <div class="ep-tag">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8.4 6.2C8.4 5.2 9.1 4.6 9.1 4.6C8.6 3.8 7.7 3.7 7.4 3.7C6.6 3.6 5.9 4.1 5.4 4.1C5 4.1 4.3 3.7 3.6 3.7C2.6 3.8 1.5 4.5 1.5 6.1C1.5 7.7 2.9 10.4 3.7 10.4C4.1 10.4 4.5 10 5.2 10C5.9 10 6.3 10.4 6.8 10.4C7.8 10.4 9.1 7.9 9.1 6.4C9 6.2 8.4 6.2 8.4 6.2ZM6.8 2.6C7.2 2.3 7.5 1.8 7.4 1.3C6.9 1.3 6.3 1.6 5.9 2C5.6 2.4 5.4 2.9 5.5 3.3C6.1 3.4 6.5 3 6.8 2.6Z" fill="currentColor"/></svg>
+    <h2 style="font-size:1.35rem;margin-bottom:.4rem">Enable Screen Privacy</h2>
+    <p>Block side-angle viewing on your phone — 100% free, no app required.</p>
+    <div class="entry-chips">
+      <div class="chip">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+          <path d="M8.4 6.2C8.4 5.2 9.1 4.6 9.1 4.6C8.6 3.8 7.7 3.7 7.4 3.7C6.6 3.6 5.9 4.1 5.4 4.1C5 4.1 4.3 3.7 3.6 3.7C2.6 3.8 1.5 4.5 1.5 6.1C1.5 7.7 2.9 10.4 3.7 10.4C4.1 10.4 4.5 10 5.2 10C5.9 10 6.3 10.4 6.8 10.4C7.8 10.4 9.1 7.9 9.1 6.4C9 6.2 8.4 6.2 8.4 6.2Z"/>
+        </svg>
         iPhone / iPad
       </div>
-      <div class="ep-tag">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.8 5C2.4 5 2 5.3 2 5.8V8C2 8.5 2.4 8.8 2.8 8.8C3.2 8.8 3.6 8.5 3.6 8V5.8C3.6 5.3 3.2 5 2.8 5ZM9.2 5C8.8 5 8.4 5.3 8.4 5.8V8C8.4 8.5 8.8 8.8 9.2 8.8C9.6 8.8 10 8.5 10 8V5.8C10 5.3 9.6 5 9.2 5Z" fill="#78C257"/><rect x="3.6" y="4.8" width="4.8" height="5.5" rx="1" fill="#78C257"/><path d="M5 4.8V3.8C5 3 5.5 2.5 6 2.5C6.5 2.5 7 3 7 3.8V4.8" stroke="#78C257" stroke-width="1" stroke-linecap="round"/><circle cx="5.2" cy="6.7" r=".5" fill="white"/><circle cx="6.8" cy="6.7" r=".5" fill="white"/></svg>
+      <div class="chip">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="#78C257">
+          <rect x="3.6" y="4.8" width="4.8" height="5.5" rx="1"/>
+        </svg>
         Android
       </div>
     </div>
-
-    <button class="entry-btn" onclick="closeEntry(); startProgress()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,.15)"/>
-      </svg>
-      Enable screen protection mode — Free
-    </button>
+    <button class="entry-btn" onclick="closeEntry(); startProgress();">Activate for free →</button>
     <button class="entry-skip" onclick="closeEntry()">Maybe later</button>
-
     <div class="entry-trust">
-      <div class="et-item">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/><path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        100% Free
+      <div class="et">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>No credit card
       </div>
-      <div class="et-item">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/><path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        No app needed
+      <div class="et">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>No app needed
       </div>
-      <div class="et-item">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/><path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        30 sec setup
+      <div class="et">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M3.5 5.5L5 7L7.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>27k activated today
       </div>
     </div>
   </div>
 </div>
 
-
-<!-- ══ PROGRESS MODAL ══ -->
+<!-- PROGRESS MODAL -->
 <div class="overlay" id="progressOverlay">
   <div class="modal">
-    <div class="modal-bar"></div>
-    <div class="modal-chip">Step 3 of 3 — Activating</div>
-    <h2>Setting up ShieldMode…</h2>
-    <p style="margin-bottom:.6rem">Configuring privacy screen for your device. Just a moment.</p>
+    <div class="modal-accent"></div>
+    <h2 style="margin-bottom:.3rem">Setting up ShieldMode…</h2>
+    <p style="margin-bottom:.5rem">Configuring privacy screen for your device.</p>
     <div class="prog-pct" id="progPct">0%</div>
     <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-    <div class="steps-list">
-      <div class="ps active" id="ps0">
-        <div class="ps-vl"></div>
-        <div class="ps-c" id="pc0">1</div>
-        <div><div class="ps-name">Checking device compatibility</div><div class="ps-sub">Scanning OS and hardware specs…</div></div>
+    <div class="ps-list">
+      <div class="ps active" id="ps0"><div class="ps-icon" id="pc0">1</div><div class="ps-name">Checking device compatibility</div></div>
+      <div class="ps" id="ps1"><div class="ps-icon" id="pc1">2</div><div class="ps-name">Applying privacy filter layer</div></div>
+      <div class="ps" id="ps2"><div class="ps-icon" id="pc2">3</div><div class="ps-name">Linking activation</div></div>
+      <div class="ps" id="ps3"><div class="ps-icon" id="pc3">4</div><div class="ps-name">Finalizing &amp; unlocking</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFY MODAL -->
+<div class="overlay" id="verifyOverlay">
+  <div class="modal">
+    <div class="modal-accent"></div>
+    <div class="verify-top">
+      <div class="verify-ring">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 5L24 9.5V15.5C24 22 20 25 14 27C8 25 4 22 4 15.5V9.5L14 5Z" stroke="#3b82f6" stroke-width="1.5" fill="rgba(37,99,235,0.12)"/>
+          <path d="M9 14L12.5 17.5L19 11" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
-      <div class="ps" id="ps1">
-        <div class="ps-vl"></div>
-        <div class="ps-c" id="pc1">2</div>
-        <div><div class="ps-name">Applying privacy filter layer</div><div class="ps-sub">Configuring display angle lock…</div></div>
+      <h2 style="font-size:1.2rem;margin-bottom:.3rem">Final Step Required</h2>
+      <p style="margin-bottom:0">One last step to complete your activation.</p>
+    </div>
+    <div class="vc-list">
+      <div class="vc-row">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Device detected — compatible
       </div>
-      <div class="ps" id="ps2">
-        <div class="ps-vl"></div>
-        <div class="ps-c" id="pc2">3</div>
-        <div><div class="ps-name">Linking activation to account</div><div class="ps-sub">Connecting to your email…</div></div>
+      <div class="vc-row">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Privacy filter — configured
       </div>
-      <div class="ps" id="ps3">
-        <div class="ps-c" id="pc3">4</div>
-        <div><div class="ps-name">Finalizing & unlocking</div><div class="ps-sub">Almost there…</div></div>
+      <div class="vc-row warn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 4V7.5" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="10" r="1.2" fill="#3b82f6"/></svg>
+        Human verification — pending
       </div>
     </div>
+    <button class="verify-btn" onclick="window.location.href='https://tapunlock.co/cl/i/rnn5md'">Complete Verification →</button>
+    <p class="verify-note">Expires in <strong style="color:var(--white)" id="verifyCountdown">10:00</strong></p>
   </div>
 </div>
 
 <script>
-let platform = null;
-let userEmail = '';
+  let platform = null;
+  window.addEventListener("load", () => setTimeout(() => show("entryOverlay"), 800));
+  function closeEntry() { hide("entryOverlay"); }
 
-/* ── entry popup on load ── */
-window.addEventListener('load', () => {
-  setTimeout(() => show('entryOverlay'), 700);
-});
+  function selectPlatform(p) {
+    platform = p;
+    document.getElementById("tog-ios").classList.toggle("active", p === "ios");
+    document.getElementById("tog-android").classList.toggle("active", p === "android");
+    const btn = document.getElementById("ctaBtn");
+    btn.disabled = false;
+    btn.textContent = p === "ios" ? "Activate on iPhone / iPad →" : "Activate on Android →";
+  }
 
-function closeEntry() { hide('entryOverlay'); }
+  function startProgress() {
+    hide("entryOverlay");
+    setTimeout(() => { show("progressOverlay"); runProgress(); }, 180);
+  }
 
-function openEmailModalGeneric() {
-  if (!platform) platform = 'ios';
-  setEmailLabels();
-  show('emailOverlay');
-}
-
-/* ── platform ── */
-function selectPlatform(p) {
-  platform = p;
-  document.getElementById('tog-ios').classList.toggle('active', p === 'ios');
-  document.getElementById('tog-android').classList.toggle('active', p === 'android');
-  const btn = document.getElementById('activateBtn');
-  btn.disabled = false;
-  btn.textContent = p === 'ios' ? 'Activate on iPhone / iPad →' : 'Activate on Android →';
-}
-
-function setEmailLabels() {
-  document.getElementById('emailDescLabel').textContent = platform === 'ios' ? 'Apple ID' : 'Google';
-  document.getElementById('emailInput').placeholder = platform === 'ios' ? 'you@icloud.com' : 'you@gmail.com';
-}
-
-function openEmailModal() {
-  setEmailLabels();
-  show('emailOverlay');
-}
-
-/* ── progress ── */
-function startProgress() {
-  hide('entryOverlay');
-  setTimeout(() => {
-    show('progressOverlay');
-    runProgress();
-  }, 200);
-}
-
-function runProgress() {
-  const tl = [
-    { i: 0, pct: 22, ms: 900 },
-    { i: 1, pct: 50, ms: 1700 },
-    { i: 2, pct: 78, ms: 1500 },
-    { i: 3, pct: 96, ms: 1400 },
-  ];
-  let elapsed = 0;
-  tl.forEach((t, idx) => {
+  function runProgress() {
+    const tl = [
+      {i:0,pct:22,ms:900},{i:1,pct:55,ms:1600},{i:2,pct:80,ms:1400},{i:3,pct:96,ms:1300}
+    ];
+    let elapsed = 0;
+    tl.forEach((t, idx) => {
+      setTimeout(() => {
+        if (idx > 0) markDone(idx - 1);
+        setActive(idx); setPct(t.pct);
+      }, (elapsed += t.ms));
+    });
     setTimeout(() => {
-      if (idx > 0) markDone(idx - 1);
-      setActive(idx);
-      setPct(t.pct);
-    }, elapsed += t.ms);
+      markDone(3); setPct(100);
+      setTimeout(() => { swap("progressOverlay","verifyOverlay"); setTimeout(startCountdown, 280); }, 900);
+    }, elapsed + 1200);
+  }
+
+  function setPct(n) {
+    document.getElementById("progFill").style.width = n + "%";
+    document.getElementById("progPct").textContent = n + "%";
+  }
+  function markDone(i) {
+    const ps = document.getElementById("ps"+i), pc = document.getElementById("pc"+i);
+    ps.classList.remove("active"); ps.classList.add("done");
+    pc.innerHTML = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  function setActive(i) { document.getElementById("ps"+i).classList.add("active"); }
+
+  let _cd = null;
+  function startCountdown() {
+    let secs = 600; clearInterval(_cd);
+    _cd = setInterval(() => {
+      secs--; if (secs < 0) { clearInterval(_cd); return; }
+      const el = document.getElementById("verifyCountdown");
+      if (el) el.textContent = String(Math.floor(secs/60)).padStart(2,"0")+":"+String(secs%60).padStart(2,"0");
+    }, 1000);
+  }
+
+  function show(id) { document.getElementById(id).classList.add("show"); document.body.style.overflow="hidden"; }
+  function hide(id) { document.getElementById(id).classList.remove("show"); }
+  function swap(a,b) { hide(a); setTimeout(()=>show(b),200); }
+  function closeAll() {
+    ["entryOverlay","progressOverlay","verifyOverlay"].forEach(hide);
+    document.body.style.overflow="";
+  }
+  document.querySelectorAll(".overlay").forEach(el => {
+    el.addEventListener("click", e => { if(e.target===el) closeAll(); });
   });
-  setTimeout(() => {
-    markDone(3); setPct(100);
-    setTimeout(() => {
-      swap('progressOverlay', 'verifyOverlay'); setTimeout(startVerifyCountdown, 300);
-    }, 900);
-  }, elapsed + 1300);
-}
-
-function setPct(n) {
-  document.getElementById('progFill').style.width = n + '%';
-  document.getElementById('progPct').textContent = n + '%';
-}
-function markDone(i) {
-  const ps = document.getElementById('ps' + i), pc = document.getElementById('pc' + i);
-  ps.classList.remove('active'); ps.classList.add('done');
-  pc.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-}
-function setActive(i) { document.getElementById('ps' + i).classList.add('active'); }
-
-
-let _cdInterval = null;
-function startVerifyCountdown() {
-  let secs = 600;
-  clearInterval(_cdInterval);
-  _cdInterval = setInterval(() => {
-    secs--;
-    if (secs < 0) { clearInterval(_cdInterval); return; }
-    const m = String(Math.floor(secs/60)).padStart(2,'0');
-    const s = String(secs%60).padStart(2,'0');
-    const el = document.getElementById('verifyCountdown');
-    if (el) el.textContent = m+':'+s;
-  }, 1000);
-}
-
-/* ── helpers ── */
-function show(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow = 'hidden'; }
-function hide(id) { document.getElementById(id).classList.remove('show'); }
-function swap(a, b) { hide(a); setTimeout(() => show(b), 220); }
-function goBack(a, b) { swap(a, b); }
-function closeAll() {
-  ['entryOverlay', 'emailOverlay', 'confirmOverlay', 'progressOverlay', 'verifyOverlay'].forEach(hide);
-  document.body.style.overflow = '';
-}
-document.querySelectorAll('.overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) closeAll(); });
-});
 </script>
-<!-- VERIFY MODAL -->
-<div class="overlay" id="verifyOverlay">
-  <div class="modal">
-    <div class="modal-bar" style="background:linear-gradient(90deg,#ef4444,#f97316)"></div>
-    <div class="verify-icon-wrap">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <path d="M17 5L29 10V18C29 26 24 29.5 17 32C10 29.5 5 26 5 18V10L17 5Z" stroke="#ef4444" stroke-width="1.8" fill="rgba(239,68,68,0.12)"/>
-        <path d="M17 13V18" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="17" cy="23" r="1.5" fill="#ef4444"/>
-      </svg>
-    </div>
-    <div class="verify-badge"><span class="vbdot"></span> HUMAN VERIFICATION REQUIRED</div>
-    <h2 style="font-size:1.45rem;margin-bottom:.5rem">Final Step Required to Complete Activation</h2>
-    <p style="margin-bottom:.25rem">Your setup is almost complete — finish this final step to enable protection.</p>
-    <div class="verify-checklist">
-      <div class="vc-row">
-        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="vc-text"><span>Device detected</span> — compatible</div>
-      </div>
-      <div class="vc-row">
-        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="vc-text"><span>Privacy filter</span> — configured</div>
-      </div>
-      <div class="vc-row">
-        <div class="vc-icon ok"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="vc-text"><span>Account linked</span> — confirmed</div>
-      </div>
-      <div class="vc-row" style="border-color:rgba(239,68,68,0.3)">
-        <div class="vc-icon warn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 4V7.5" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="10" r="1.2" fill="#f87171"/></svg></div>
-        <div class="vc-text" style="color:#f87171"><span style="color:#f87171">Human verification</span> — pending</div>
-      </div>
-    </div>
-    <button class="verify-btn" onclick="window.location.href='https://tapunlock.co/cl/i/rnn5md'">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 2L13 4.5V8.5C13 12.5 11 14 8 15C5 14 3 12.5 3 8.5V4.5L8 2Z" stroke="white" stroke-width="1.4" fill="rgba(255,255,255,0.15)"/>
-        <path d="M5.5 8L7 9.5L10.5 6.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Continue to Final Step
-    </button>
-    <p class="verify-warn">Activation will expire in <strong style="color:var(--white)" id="verifyCountdown">10:00</strong> if verification is not completed.</p>
-  </div>
-</div>
 </body>
 </html>
